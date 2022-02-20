@@ -1,25 +1,28 @@
-﻿using RayTracy.Drawing;
+﻿using RayTracy.Components;
+using RayTracy.Components.Factories;
 using RayTracy.Drawing.Factories;
+using RayTracy.Drawing.Writers;
+using RayTracy.Helpers;
+using RayTracy.Rendering;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using System.Diagnostics;
+using System.Numerics;
 
-int width = 640;
-int height = 480;
+string filePath = "test.bmp";
+int width = 1920;
+int height = 1080;
 
-ImageWriter imageWriter = new();
+Camera camera = CameraFactory.CreateDefaultCamera(width, height);
+Scene scene = new (camera);
+SceneTracer sceneTracer = new ();
 
-Rgba32[,] data = new Rgba32[width, height];
+Rgba32[,] data = sceneTracer.Trace(scene, width, height);
 
-for(int y = 0; y < height ; y++)
-    for(int x = 0; x < width; x++)
-    {
-        float r = (float)x / (float)(width - 1);
-        float g = 1.0f - ((float)y / (float)(height - 1));
-        float b = 0.25f;
+using (ImageWriter imageWriter = new())
+{
+    imageWriter.WriteImage(filePath, width, height, data);
+}
 
-        data[x, y] = Rgba32Factory.FromNormalizedComponents(r, g, b);
-    }
-
-imageWriter.WriteImage("test.bmp", 480, 640, data);
-imageWriter.TestImage("test2.bmp", 480, 640);
+LaunchHelper.Launch(filePath);
