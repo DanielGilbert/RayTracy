@@ -5,7 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RayTracy.Core
+namespace RayTracy.Math
 {
     public class Ray
     {

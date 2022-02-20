@@ -1,19 +1,24 @@
-﻿using SixLabors.ImageSharp;
+﻿using RayTracy.Drawing;
+using RayTracy.Drawing.Factories;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
 int width = 640;
 int height = 480;
 
-using (Image<Rgba32> image = new(width, height))
-{
-    Console.WriteLine("Start writing image..");
-    for (int x = 0; x < width; x++)
-        for (int y = 0; y < height; y++)
-        {
-            image[x, y] = new Rgba32(0, 255, 255, 255);
-        }
+ImageWriter imageWriter = new();
 
-    image.SaveAsBmp("test.bmp");
-    Console.WriteLine("Image saved.");
-}
+Rgba32[,] data = new Rgba32[width, height];
+
+for(int y = height - 1; y >= 0 ; y--)
+    for(int x = 0; x < width; x++)
+    {
+        float r = (float)x / (float)(width - 1);
+        float g = (float)y / (float)(height - 1);
+        float b = 0.25f;
+
+        data[x, y] = Rgba32Factory.FromNormalizedComponents(r, g, b);
+    }
+
+imageWriter.WriteImage("test.bmp", 480, 640, data);
